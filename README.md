@@ -32,32 +32,11 @@
 | env613 | 123 | A | A | 30 | 0.75 |
 | env614 | 125 | C | G | 1 | 0.001 |
 
-**-i | --input : input diectory (required)**
-`/path/input/` - the path to the bams files
-
-**-o | --output : output directory (required)**
-`/path/output` - the path to the uotput directory. created if directory do not exist 
-
-**-r | --ref : provide refseq path (required)**
-`/path/ref.fasta` - the path to reference sequence fasta file.
-
-**-t | --threads : threads number**
-`int` - requested number of threads. can be used in case you have multiple bam files. default=1.
-
-
-
-`sewer_new.py pileup [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]` 
-`pileup` - creates Monitored_Mutations.csv file with merged mutationsTable.xlsx (all COVID19 variants) with pileup.csv file. for example:
-| index | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | sample1 | sample2 | ... | samplen |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 275T | A.2.5.1 | 275 | C | T | NSP1 | L4F | SNP | Leader protein | NSP1:L4F | C275T | 0 | 0 | ... | 0.8 |
-| 10747T | A.23.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
-
 **-i | --input : input diectory (required)**  
 `/path/input/` - the path to the bams files
 
 **-o | --output : output directory (required)**  
-`/path/output` - the path to the uotput directory. created if directory do not exist 
+`/path/output` - the path to the output directory. created if directory do not exist 
 
 **-r | --ref : provide refseq path (required)**  
 `/path/ref.fasta` - the path to reference sequence fasta file.
@@ -65,5 +44,66 @@
 **-t | --threads : threads number**  
 `int` - requested number of threads. can be used in case you have multiple bam files. default=1.
 
+&nbsp;
 
-`sewer_new.py bam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx] [-v VARIANT]`
+`sewer_new.py pileup [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]`   
+`pileup` - creates Monitored_Mutations.csv file containing all mutations in mutationsTable.xlsx (all COVID19 variants) merged with pileup.csv file. for example:
+| index | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | sample-1 | sample-2 | ... | sample-n |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 275T | A.2.5.1 | 275 | C | T | NSP1 | L4F | SNP | Leader protein | NSP1:L4F | C275T | 0 | 0 | ... | 0.8 |
+| 10747T | A.23.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
+
+**-i | --input : input diectory (required)**  
+`/path/input/` - the path to the pileup file (or files).
+
+**-o | --output : output directory (required)**  
+`/path/output` - the path to the output directory. created if directory do not exist 
+
+**-b | --bodek : provide refseq path (required)**  
+`/path/mutationsTable.xlsx` - the path to mutationsTable.xlsx.
+
+**-t | --threads : threads number**  
+`int` - requested number of threads. can be used in case you have multiple pileups files. default=1.
+
+&nbsp;
+
+`sewer_new.py query_var [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]`   
+`query_var` - creates (variant)Monitored_Mutations.csv file containing all mutations in one asked variant from mutationsTable.xlsx merged with pileup.csv file for example:
+| index | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | sample-1 | sample-2 | ... | sample-n |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 275T | A.2.5.1 | 275 | C | T | NSP1 | L4F | SNP | Leader protein | NSP1:L4F | C275T | 0 | 0 | ... | 0.8 |
+| 10747T | A.23.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
+
+**-i | --input : input diectory (required)**  
+`/path/input/` - the path to the pileup file (or files).
+
+**-o | --output : output directory (required)**  
+`/path/output` - the path to the output directory. created if directory do not exist 
+
+**-b | --bodek : provide refseq path (required)**  
+`/path/mutationsTable.xlsx` - the path to mutationsTable.xlsx.
+
+**-t | --threads : threads number**  
+`int` - requested number of threads. can be used in case you have multiple pileups files. default=1.
+
+
+&nbsp;
+
+`sewer_new.py query_sam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]`  
+`query_sam` - creates Variants_Mutations_In_Samples.csv file containing all mutations from pileups.csv with association to the COVID19 variants (1=mutation exist in vaiant, 0=otherwise). for example:
+| index | samplename | ref | alt | count | freq | variant-1 | variant-2 | ... | variant-n |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 275T | env613 | 275 | C | T | 5 | 0.01 | 0 | 0 | ... | 1 |
+| 10747T | env614 | 10747 | C | T | 111 | 1 | 1 | 1 | ... | 0 |
+
+**-i | --input : input diectory (required)**  
+`/path/input/` - the path to the pileup file (or files).
+
+**-o | --output : output directory (required)**  
+`/path/output` - the path to the output directory. created if directory do not exist 
+
+**-b | --bodek : provide refseq path (required)**  
+`/path/mutationsTable.xlsx` - the path to mutationsTable.xlsx.
+
+**-t | --threads : threads number**  
+`int` - requested number of threads. can be used in case you have multiple pileups files. default=1.
