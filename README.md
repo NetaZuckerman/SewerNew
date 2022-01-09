@@ -93,7 +93,7 @@
 `sewer_new.py query_sam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]`  
 `query_sam` - creates Variants_Mutations_In_Samples.csv file containing all mutations from pileups.csv with association to the COVID19 variants (1=mutation exist in vaiant, 0=otherwise). for example:
 | index | samplename | pos | ref | alt | count | freq | variant-1 | variant-2 | ... | variant-n |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 275T | env613 | 275 | C | T | 5 | 0.01 | 0 | 0 | ... | 1 |
 | 10747T | env614 | 10747 | C | T | 111 | 1 | 1 | 1 | ... | 0 |
 
