@@ -25,8 +25,8 @@
 ### bam action
 `sewer_new.py bam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-r CORONA_REFERANCE.fasta] [optional -t NUMBER_OF_THREDS]`
 
-**bam : action | action to be axecuted (required)**
-`bam` - creates pileup.csv file with information on all mapped positions in input bam files. for example:
+**bam : action | action to be axecuted (required)**  
+`bam` - creates pileup.csv file with information on all mapped positions in input bam files. for example:  
 | samplename | pos | ref | alt | count | freq |
 | --- | --- | --- | --- | --- | --- | 
 | env613 | 123 | A | G | 10 | 0.25 |
@@ -47,7 +47,8 @@
 
 &nbsp;
 ### pileup action
-`sewer_new.py pileup [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]`   
+`sewer_new.py pileup [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]` 
+pileup : action | action to be axecuted (required)  
 `pileup` - creates Monitored_Mutations.csv file containing all mutations in mutationsTable.xlsx (all COVID19 variants) merged with pileup.csv file. for example:
 | index | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -68,7 +69,8 @@
 
 &nbsp;
 ### query_var action
-`sewer_new.py query_var [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]`   
+`sewer_new.py query_var [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]` 
+query_var : action | action to be axecuted (required)  
 `query_var` - creates (variant)Monitored_Mutations.csv file containing all mutations in one asked variant from mutationsTable.xlsx merged with pileup.csv file for example:
 | index | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -90,7 +92,8 @@
 
 &nbsp;
 ### query_sam action
-`sewer_new.py query_sam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]`  
+`sewer_new.py query_sam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]`
+query_sam : action | action to be axecuted (required)  
 `query_sam` - creates Variants_Mutations_In_Samples.csv file containing all mutations from pileups.csv with association to the COVID19 variants (1=mutation exist in vaiant, 0=otherwise). for example:
 | index | samplename | pos | ref | alt | count | freq | A | A.2.5.1 | ... | PDI 353 (B.1.637 Based) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
