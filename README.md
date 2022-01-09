@@ -22,6 +22,7 @@
 `sewer_new.py query_sam -i /path/to/input/pileup/dir/ -o /path/to/output/dir/ -b /path/to/mutationsTable.xlsx`
 
 ## Additional info: new_sewer.py
+### bam action
 `sewer_new.py bam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-r CORONA_REFERANCE.fasta] [optional -t NUMBER_OF_THREDS]`
 
 **bam : action | action to be axecuted (required)**
@@ -45,7 +46,7 @@
 `int` - requested number of threads. can be used in case you have multiple bam files. default=1.
 
 &nbsp;
-
+### pileup action
 `sewer_new.py pileup [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]`   
 `pileup` - creates Monitored_Mutations.csv file containing all mutations in mutationsTable.xlsx (all COVID19 variants) merged with pileup.csv file. for example:
 | index | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | sample-1 | sample-2 | ... | sample-n |
@@ -66,7 +67,7 @@
 `int` - requested number of threads. can be used in case you have multiple pileups files. default=1.
 
 &nbsp;
-
+### query_var action
 `sewer_new.py query_var [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]`   
 `query_var` - creates (variant)Monitored_Mutations.csv file containing all mutations in one asked variant from mutationsTable.xlsx merged with pileup.csv file for example:
 | index | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | sample-1 | sample-2 | ... | sample-n |
@@ -88,7 +89,7 @@
 
 
 &nbsp;
-
+### query_sam action
 `sewer_new.py query_sam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx]`  
 `query_sam` - creates Variants_Mutations_In_Samples.csv file containing all mutations from pileups.csv with association to the COVID19 variants (1=mutation exist in vaiant, 0=otherwise). for example:
 | index | samplename | ref | alt | count | freq | variant-1 | variant-2 | ... | variant-n |
