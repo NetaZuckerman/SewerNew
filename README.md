@@ -62,7 +62,7 @@
 **-o | --output : output directory (required)**  
 `/path/output` - the path to the output directory. created if directory do not exist 
 
-**-b | --bodek : provide refseq path (required)**  
+**-b | --bodek : provide mutationsTable file path (required)**  
 `/path/mutationsTable.xlsx` - the path to mutationsTable.xlsx.
 
 **-t | --threads : threads number**  
@@ -77,7 +77,7 @@
 | index | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 275T | A.2.5.1 | 275 | C | T | NSP1 | L4F | SNP | Leader protein | NSP1:L4F | C275T | 0 | 0 | ... | 0.8 |
-| 10747T | A.23.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
+| 10747T | A.2.5.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
 
 **-i | --input : input diectory (required)**  
 `/path/input/` - the path to the pileup file (or files).
@@ -85,8 +85,11 @@
 **-o | --output : output directory (required)**  
 `/path/output` - the path to the output directory. created if directory do not exist 
 
-**-b | --bodek : provide refseq path (required)**  
+**-b | --bodek : provide mutationsTable file path (required)**  
 `/path/mutationsTable.xlsx` - the path to mutationsTable.xlsx.
+
+**-v | --variant : provide variant name (required)**  
+`variant` - name of variant in the same format as mutationsTable (for example 'A.2.5.1') .
 
 **-t | --threads : threads number**  
 `int` - requested number of threads. can be used in case you have multiple pileups files. default=1.
@@ -109,7 +112,7 @@
 **-o | --output : output directory (required)**  
 `/path/output` - the path to the output directory. created if directory do not exist 
 
-**-b | --bodek : provide refseq path (required)**  
+**-b | --bodek : provide mutationsTable file path (required)**  
 `/path/mutationsTable.xlsx` - the path to mutationsTable.xlsx.
 
 **-t | --threads : threads number**  
