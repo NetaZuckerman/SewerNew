@@ -11,7 +11,7 @@ from collections import (defaultdict, Counter)
 import multiprocessing as mp
 from pathlib import Path
 import re
-
+import os
 import numpy as np
 import pandas as pd
 import pdb
@@ -163,7 +163,7 @@ class BamConverter():
         
         
         df = pd.concat(dfs, axis=0) \
-            .melt(ignore_index=False, var_name='nucleotide', value_name='count') \
+            .melt(ignore_index=False, var_name='alt', value_name='count') \
             .reset_index()
         #df = df.loc[df['count'].gt(0)] # not rm 0 - indication if mapped / not mutated.
         df['freq'] = df['count'] / df.groupby(['samplename','pos'])['count'].transform('sum') 
@@ -191,11 +191,11 @@ class BodekMerge():
         pileup_df = pd.read_csv(pileup_files)
         bodek_dict = pd.read_excel(self.args.bodek, sheet_name=None,engine='openpyxl')
 
-        pileup_df = pileup_df.pivot(index=['pos', 'nucleotide'], columns=['samplename'], values=['freq']) \
+        pileup_df = pileup_df.pivot(index=['pos', 'alt'], columns=['samplename'], values=['freq']) \
             .droplevel(0, axis=1) \
             .reset_index()
             
-        pileup_df['pos_nuc'] = pileup_df['pos'].astype(str) + pileup_df['nucleotide']
+        pileup_df['pos_nuc'] = pileup_df['pos'].astype(str) + pileup_df['alt']
         pileup_df = pileup_df.set_index('pos_nuc')
 
             
@@ -242,7 +242,7 @@ class BodekMerge():
         #for pileup_file in pileup_files:
             # print(pileup_file)
             # pileups_df = pd.read_csv(pileup_file)
-            # merged_pileups = self._merge_pileups_bodek((bodek_dict, pileups_df[['samplename','pos','nucleotide','freq']]))
+            # merged_pileups = self._merge_pileups_bodek((bodek_dict, pileups_df[['samplename','pos','alt','freq']]))
         
         with mp.Pool(self.args.threads) as pool:
 
@@ -274,10 +274,10 @@ class PileupMerge():
         pileup_df = pd.read_csv(pileup_files)
         bodek_dict = pd.read_excel(self.args.bodek, sheet_name=None,engine='openpyxl')
 
-        pileup_df = pileup_df.drop(pileup_df[(pileup_df.ref == pileup_df.nucleotide)].index)
+        pileup_df = pileup_df.drop(pileup_df[(pileup_df.ref == pileup_df.alt)].index)
         pileup_df = pileup_df.drop(pileup_df[pileup_df.freq == 0].index)
 
-        pileup_df = pileup_df.set_index(pileup_df.pos.astype(str) + pileup_df['nucleotide'])
+        pileup_df = pileup_df.set_index(pileup_df.pos.astype(str) + pileup_df['alt'])
 
 
         variants = []
@@ -326,6 +326,12 @@ if __name__ == "__main__":
 
     parser = define_parser()
     args = parser.parse_args()
+    
+    # Check whether the specified path exists or not
+    isExist = os.path.exists(args.output)
+    if not isExist: 
+  # Create a new directory because it does not exist 
+      os.makedirs(args.output)
 
     if args.action == 'bam':
         bam_converter = BamConverter(args)
