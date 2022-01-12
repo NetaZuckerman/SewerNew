@@ -4,7 +4,7 @@
 """
 Created on Tue Dec  7 14:13:05 2021
 
-@author: omera
+@author: orz
 """
 import argparse
 from collections import (defaultdict, Counter)
@@ -14,8 +14,13 @@ import re
 import os
 import numpy as np
 import pandas as pd
-import pdb
 import pysam
+import glob
+from datetime import datetime
+import itertools
+import logging
+import sys
+logger = logging.getLogger(__name__)
 
 
 #%% Utils
@@ -24,8 +29,11 @@ def define_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'action',
+        default = 'all',
+        const='all',
+        nargs='?',
         type=str,
-        choices=['bam', 'pileup', 'query_var', 'query_sam', 'move']
+        choices=['bam', 'pileup', 'query_var', 'query_freqMut', 'all']
         )
     
     parser.add_argument(
@@ -74,12 +82,43 @@ def define_parser():
     variant.add_argument(
         '-v',
         '--variant',
-        dest='query_var',
+        dest='variant',
         type=str,
         default='',
         help="Name of variant, For example B.1.617.2"
         )
-      
+    
+    ngs = parser.add_argument_group('ngs-specific arguments')
+    variant.add_argument(
+        '-n',
+        '--ngs',
+        dest='ngs',
+        type=str,
+        default=None,
+        help="Name of variant, For example B.1.617.2"
+        )
+    
+    frq = parser.add_argument_group('Pileup arguments')
+    bodek.add_argument(
+        '-f',
+        '--frequency',
+        dest='frq',
+        type=float,
+        default=0.3,
+        help="Path to MutationsTable.xlsx"
+        )
+    min_depth = parser.add_argument_group('min_depth arguments')
+    variant.add_argument(
+        '-m',
+        '--min_depth',
+        dest='min_depth',
+        type=int,
+        default=10,
+        help="Name of variant, For example B.1.617.2"
+        )
+    
+    
+    
     return parser
 
 
@@ -107,17 +146,17 @@ class BamConverter():
     output: dataframe with info about the positions in the input bam file.
     '''
     def _generate_pileups_from_bam(self, bam_file):
-        
+        print(bam_file)
         with pysam.AlignmentFile(bam_file) as bamfile, pysam.FastaFile(self.args.ref) as fastafile:
-
+            
             pileups = bamfile.pileup(stepper='samtools', fastafile=fastafile)
             counts = []
             pos = []
             ref = []
             # for each position in pileup (= each position in bam)
             for i, pos_pileup in enumerate(pileups):
-                n = sum([pread.is_refskip for pread in pos_pileup.pileups]) 
-                pos_count = Counter(map(str.upper, pos_pileup.get_query_sequences())) # count ach nucleutide depth
+                n = sum([pread.is_refskip for pread in pos_pileup.pileups])
+                pos_count = Counter(map(str.upper, pos_pileup.get_query_sequences()))
                 pos_count['N'] = n
                 pos.append(pos_pileup.reference_pos + 1)
                 counts.append(pos_count)
@@ -134,7 +173,7 @@ class BamConverter():
             .rename(columns={'': '-'}) \
             .astype(pd.SparseDtype(np.int16, 0))
         if '-' not in df.columns:
-            df['-'] = 0 # for deletions
+            df['-'] = 0
         #total_count = df.sum(axis=1)
         
         df['ref'] = ref
@@ -146,31 +185,59 @@ class BamConverter():
         return df
     
     '''
-    main function of bam action.  
-    with multyproccesing, send each bam file to '_generate_pileups_from_bam' func and creates united data frame. 
+    send bam files to create pileup.  
+    with multyproccesing, from /PATH/NGSxx_DATE dir send each bam file to '_generate_pileups_from_bam' func and creates united data frame. 
     input: path to dir with all bam files.
     output: one csv file named 'pileups' which contains information about the positions of all mapped bams.
     '''
+    def create_output(self,path):
+        ngs_dir = os.path.basename(path).split('_')[0]
+        pileup_file = ngs_dir + '_pileup.csv'
+        #pileup_file = os.path.join(path, pileup_file)
+        listOfFiles = list()
+        for (dirpath, dirnames, filenames) in os.walk(path):
+            listOfFiles += [file for file in filenames]
+        if pileup_file not in listOfFiles:   
+            bam_files = Path(path).rglob('*mapped.sorted.bam')
+            with mp.Pool(self.args.threads) as pool:
+                dfs = pool.map(self._generate_pileups_from_bam, bam_files)
+
+            df = pd.concat(dfs, axis=0) \
+                .melt(ignore_index=False, var_name='alt', value_name='count') \
+                .reset_index()
+            #df = df.loc[df['count'].gt(0)] # not rm 0 - indication if mapped / not mutated.
+            df['freq'] = df['count'] / df.groupby(['samplename','pos'])['count'].transform('sum') 
+            df = df.dropna()
+                
+            out_dir = os.path.join(path, 'result')
+            isExist = os.path.exists(out_dir)
+            if not isExist: 
+                os.makedirs(out_dir)
+            out_path = os.path.join(out_dir, pileup_file)
+                
+            df.to_csv(out_path,index=False)
+
+            
+    '''
+    main function of bam action.  
+    sends /PATH/NGSxx_DATE directories extracted from arg.input to create_output func .
+    '''                
     def convert(self):
-        bam_path = verify_path(self.args, 'input')
         
-        bam_files = bam_path.glob('*mapped.sorted.bam')
-        
-        
-        with mp.Pool(self.args.threads) as pool:
-            dfs = pool.map(self._generate_pileups_from_bam, bam_files)
-        
-        
-        
-        df = pd.concat(dfs, axis=0) \
-            .melt(ignore_index=False, var_name='alt', value_name='count') \
-            .reset_index()
-        #df = df.loc[df['count'].gt(0)] # not rm 0 - indication if mapped / not mutated.
-        df['freq'] = df['count'] / df.groupby(['samplename','pos'])['count'].transform('sum') 
-        df = df.dropna()
-        
-        out_path = self.args.output / 'pileups.csv'
-        df.to_csv(out_path,index=False)
+        basepath = verify_path(self.args, 'input')
+        print("starts creating pileup files")
+        # if args.input dir is /PATH/NGSxx_DATE directory
+        if os.path.basename(basepath).startswith("NGS"):
+            self.create_output(basepath) 
+        # if args.input dir contains /PATH/NGSxx_DATE directories 
+        else:
+            for fname in os.listdir(basepath):
+                path = os.path.join(basepath, fname)
+                if os.path.isdir(path) and fname.startswith('NGS'):
+                    self.create_output(path)
+                    
+        print("done creating pileup files")
+
 
 #%% Bodek-based table
 
@@ -187,7 +254,8 @@ class BodekMerge():
     output: dataframe with mutations frequencies in all samples for each variant.
     '''
     def _merge_pileups_bodek(self,pileup_files):
-
+        print(pileup_files)
+        logger.info(os.path.dirname(pileup_files))
         pileup_df = pd.read_csv(pileup_files)
         bodek_dict = pd.read_excel(self.args.bodek, sheet_name=None,engine='openpyxl')
 
@@ -202,7 +270,8 @@ class BodekMerge():
         env_cols = list(filter(lambda col: 'env' in col, pileup_df.columns))
         # for query_var extract only the asked variant
         if(self.args.action == 'query_var'):
-            bodek_dict = {self.args.query_var: bodek_dict[self.args.query_var]}
+            list_var = self.args.variant.split(',')
+            bodek_dict = {i: bodek_dict[i] for i in list_var}
             
 
         output_dfs = []
@@ -214,9 +283,9 @@ class BodekMerge():
             sheet.loc[ind, env_cols] = pileup_df.loc[ind, env_cols]
             sheet.insert(0, 'cov_variant', variant)
             output_dfs.append(sheet)
-        outputs_df = pd.concat(output_dfs, axis=0) 
+        outputs_df = pd.concat(output_dfs, axis=0)
         outputs_df = outputs_df.drop(["Unnamed: 9","nuc sub.1"], axis=1,errors='ignore')
-        outputs_df = outputs_df.fillna(0) # if the mutation did not occured
+        outputs_df = outputs_df.fillna('NC') # if the mutation did not occured
         return outputs_df
 
 
@@ -235,15 +304,19 @@ class BodekMerge():
     def merge(self):
 
         pileup_path = verify_path(self.args, 'input')
+        print("starts creating Monitored_Mutations table")
         
-        pileup_files = pileup_path.glob('*pileups.csv')
+        #pileup_files = pileup_path.glob('*pileups.csv')
 
-        
-        #for pileup_file in pileup_files:
-            # print(pileup_file)
-            # pileups_df = pd.read_csv(pileup_file)
-            # merged_pileups = self._merge_pileups_bodek((bodek_dict, pileups_df[['samplename','pos','alt','freq']]))
-        
+        if self.args.ngs:
+            ngs_list = self.args.ngs.split(',')
+            ngs_list = ['NGS' + s + '_pileup.csv' for s in ngs_list]
+            pileup_files = [os.path.join(root, file) for root, dirs, files in os.walk(pileup_path) for file in files if file in ngs_list]
+
+        else:
+            pileup_files = Path(pileup_path).rglob('NGS*_pileup.csv')
+    
+
         with mp.Pool(self.args.threads) as pool:
 
             merged_pileups = pool.map(self._merge_pileups_bodek,pileup_files ) 
@@ -251,9 +324,11 @@ class BodekMerge():
         merged_pileup = pd.concat(merged_pileups, axis=1) \
             .reset_index()
         merged_pileup = merged_pileup.loc[:,~merged_pileup.columns.duplicated()]
-
-        out_path = args.output / ('%sMonitored_Mutations.csv' % (self.args.query_var))
+        merged_pileup = merged_pileup.drop(columns='index')
+        day = datetime.now().strftime("%Y%m%d")
+        out_path = args.output / ('%sMonitored_Mutations_%s.csv' % (self.args.variant,day))
         merged_pileup.to_csv(out_path,index=False)
+        print("done creating Monitored_Mutations table")
 
 
 #%% Pileup-based table
@@ -271,31 +346,51 @@ class PileupMerge():
     output: dataframe of mutations indexed by variants.
     ''' 
     def _merge_pileups_bodek(self,pileup_files):
+        print(pileup_files)
+        logger.info(os.path.dirname(pileup_files))
         pileup_df = pd.read_csv(pileup_files)
         bodek_dict = pd.read_excel(self.args.bodek, sheet_name=None,engine='openpyxl')
 
         pileup_df = pileup_df.drop(pileup_df[(pileup_df.ref == pileup_df.alt)].index)
         pileup_df = pileup_df.drop(pileup_df[pileup_df.freq == 0].index)
-
+        
         pileup_df = pileup_df.set_index(pileup_df.pos.astype(str) + pileup_df['alt'])
-
+        # if exist mutation in the bodek and there is another mutation in the same position
+        pileup_df_low = pileup_df.loc[(pileup_df['count'] < self.args.min_depth) | (pileup_df['freq'] < self.args.frq)]
+        pileup_df = pileup_df.loc[(pileup_df['count'] >= self.args.min_depth) & (pileup_df['freq'] >= self.args.frq)]
+        
+        if(self.args.variant != ''):
+            list_var = self.args.variant.split(',')
+            bodek_dict = {i: bodek_dict[i] for i in list_var}
 
         variants = []
         for variant, sheet in bodek_dict.items():
             ind = sheet.Position.astype(str) + sheet['Mutation']
             pileup_df.loc[:, variant] = 0
-            pileup_df.loc[pileup_df.index.isin(ind),variant] = 1 # index 1 if mutation contained in variant
+            pileup_df.loc[pileup_df.index.isin(ind),variant] = 1
             variants.append(variant)
-            #rows_to_rm = [pileup_df.loc[:,7:pileup_df.shape[1]].sum(axis=1)]
 
-        pileup_df['variants_count'] = pileup_df[variants].sum(axis=1) 
-        position = pileup_df.loc[pileup_df['variants_count'] != 0 ,'pos']
-        pileup_df = pileup_df.loc[pileup_df.pos.isin(position)]
+        pileup_df['variants_count'] = pileup_df[variants].sum(axis=1)
+        position = pileup_df.loc[pileup_df['variants_count'] != 0 ,'pos'] # for enother mutation in the same position
+        pileup_df_low = pileup_df_low.loc[pileup_df_low.pos.isin(position)]
         pileup_df.drop('variants_count', inplace=True, axis=1)
+
+        pileup_df = pd.merge(pileup_df, pileup_df_low,  how='outer', left_on=['samplename','pos','ref','alt','count','freq'], right_on = ['samplename','pos','ref','alt','count','freq'])
+        pileup_df = pileup_df.fillna(0)
+        pileup_df.reset_index(drop=True,inplace=True)
+
+        # join variants to on column
+        pileup_df['variants'] = ''
+        col = pileup_df.columns.get_loc('variants')
+        for index, row in pileup_df.iterrows():
+            d = itertools.compress(variants,row[6:len(row)])
+            pileup_df.iloc[index,col] = ';'.join([str(i) for i in list(d)])
+          
+        pileup_df.insert(6, 'variants', pileup_df.pop('variants')) # replace columns
         return pileup_df
 
     '''
-    main function of query_sam action.  
+    main function of query_freqMut action.  
     with multyproccesing, send pilup file (or several in the same dir) to '_merge_pileups_bodek' func 
         and creates (united) data frame. 
     input: path to dir with pileup file (-or files).
@@ -306,10 +401,16 @@ class PileupMerge():
     def merge(self):
 
         pileup_path = verify_path(self.args, 'input')
+        print("starts creating Variants_Mutations_In_Samples table")
         
-        pileup_files = pileup_path.glob('*pileups.csv')
+        if self.args.ngs:
+            ngs_list = self.args.ngs.split(',')
+            ngs_list = ['NGS' + s + '_pileup.csv' for s in ngs_list]
+            pileup_files = [os.path.join(root, file) for root, dirs, files in os.walk(pileup_path) for file in files if file in ngs_list]
 
-
+        else:
+            pileup_files = Path(pileup_path).rglob('NGS*_pileup.csv')
+            
         with mp.Pool(self.args.threads) as pool:
 
             merged_pileups = pool.map(self._merge_pileups_bodek,pileup_files ) 
@@ -317,9 +418,12 @@ class PileupMerge():
         merged_pileup = pd.concat(merged_pileups, axis=0) \
             .reset_index()
         #merged_pileup = merged_pileup.loc[:,~merged_pileup.columns.duplicated()]
-
-        out_path = args.output / ('Variants_Mutations_In_Samples.csv')
+        merged_pileup = merged_pileup.drop(columns='index')
+        merged_pileup.drop_duplicates(inplace=True)
+        day = datetime.now().strftime("%Y%m%d")
+        out_path = args.output / ('%sVariants_Mutations_In_Samples_%s.csv' % (self.args.variant,day))
         merged_pileup.to_csv(out_path,index=False)
+        print("done creating Variants_Mutations_In_Samples table")
 
 #%% Main
 if __name__ == "__main__":
@@ -330,13 +434,22 @@ if __name__ == "__main__":
     # Check whether the specified path exists or not
     isExist = os.path.exists(args.output)
     if not isExist: 
-  # Create a new directory because it does not exist 
+      # Create a new directory because it does not exist 
       os.makedirs(args.output)
+      
+    day = datetime.now().strftime("%Y%m%d")
+    out_path = args.output / ('command__%s.log' % (day)) 
+    logging.basicConfig(filename = os.path.join(out_path), level = logging.INFO,
+                        format = '%(asctime)s %(message)s',
+                        datefmt = '%Y-%m-%d %H:%M:%S')
 
-    if args.action == 'bam':
+    logger.info(sys.argv)
+    if args.action == 'all':
         bam_converter = BamConverter(args)
         bam_converter.convert()
-    elif args.action == 'query_sam':
+        bodeq_merge = BodekMerge(args)
+        bodeq_merge.merge()
+    elif args.action == 'query_freqMut':
         pileup_merge = PileupMerge(args)
         pileup_merge.merge()
     elif args.action == 'pileup' or 'query_var':
