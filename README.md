@@ -28,7 +28,7 @@
 `sewer_new.py [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-r CORONA_REFERANCE.fasta] [-b mutationsTable.xlsx] [optional: -t NUMBER_OF_THREDS] [optional: -n NGS_RUNS]`
 
 Creates 2 types of files:
-### pileup.csv
+### 1. pileup.csv
 Creates pileup.csv file (or files) with information about all mapped positions in input bam files. for example:
 | samplename | pos | ref | alt | count | freq |
 | --- | --- | --- | --- | --- | --- |
@@ -38,7 +38,7 @@ Creates pileup.csv file (or files) with information about all mapped positions i
 
 This action goes recursively over all BAM directories in the NGS_run directories from the input argument, and for each NGS_run, creates 'result' directory with pileup.csv file.
 The pileup file name will be unique for each NGS run. For example: NGS130_pileup.csv file will be created for NGS130_13122021. 
-### Monitored_Mutations.csv
+### 2. Monitored_Mutations.csv
 Creates Monitored_Mutations.csv file containing all mutations in mutationsTable.xlsx (all COVID19 variants) merged with pileup.csv file (or files). for example:
 | index | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -70,9 +70,9 @@ To create pileup tables for all NGS runs and one Monitored_Mutations for all tho
 `string` - NGS run (or runs) to focus on in generating the Monitored_Mutations.csv table. provide the NGS runs seperated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument.
 
 ### Commands Examples:
-1. `sewer_new.py -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx`
+1. `sewer_new.py -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx`  
 This command creates result directory with NGS134_pileup.csv and Monitored_Mutations_20220112.csv files.
-2. `sewer_new.py -i /data/sewer/ -o /data/sewer/result_NGS130-134/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134`
+2. `sewer_new.py -i /data/sewer/ -o /data/sewer/result_NGS130-134/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134`  
 This command creates 'result' directories for all NGS runs in /data/sewer/ that not contain pileup file. Afterwards the pipeline will create 'result_NGS130-134' directory with Monitored_Mutations_20220112.csv table for all samples in NGS130, NGS131, NGS132, NGS133 and NGS134.
 
 &nbsp;
@@ -104,9 +104,9 @@ To create one Monitored_Mutations for all NGS runs, provide a path to parent dir
 `string` - NGS run (or runs) to focuse on in generating the Monitored_Mutations.csv table. provide the NGS runs seperated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument. 
 
 ### Commands Examples:
-1. `sewer_new.py pileup -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx`
+1. `sewer_new.py pileup -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx`  
 This command creates 'result' directory with Monitored_Mutations_20220112.csv file. Important to make sure that NGS134_pileup.csv file exist in /data/sewer/NGS134_30122021/ .
-2. `sewer_new.py pileup -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134`
+2. `sewer_new.py pileup -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134`  
 This command creates 'result_NGS130-132' directory with Monitored_Mutations_20220112.csv table for all samples in NGS130, NGS131, NGS132. Important to make sure that NGS130_pileup.csv, NGS131_pileup.csv, NGS132_pileup.csv files exist in /data/sewer/ .
 
 &nbsp;
@@ -141,9 +141,9 @@ To create one (variant)Monitored_Mutations.csv for all NGS runs, provide a path 
 `string` - NGS run (or runs) to focus on in generating the Monitored_Mutations.csv table. provide the NGS runs separated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument. 
 
 ### Commands Examples:
-1. `sewer_new.py query_var -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -v A.2.5.1,B.1.617.2`
+1. `sewer_new.py query_var -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -v A.2.5.1,B.1.617.2`  
 This command creates 'result' directory (if not exist) with A.2.5.1,B.1.617.2Monitored_Mutations_20220111.csv table for all samples in NGS134_30122021. Important to make sure that NGS134_pileup.csv file exist in /data/sewer/NGS134_30122021/ .
-2. `sewer_new.py query_var -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134`
+2. `sewer_new.py query_var -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134`  
 This command creates 'result_NGS130-132' directory (if not exist) with B.1.617.2Monitored_Mutations_20220111.csv table for all samples in NGS130, NGS131, NGS132. Important to make sure that NGS130_pileup.csv, NGS131_pileup.csv, NGS132_pileup.csv files exist in /data/sewer/ .
 
 &nbsp;
@@ -187,11 +187,11 @@ Notice: mutation that occure in the same position as variant's mutation, will be
 Notice: mutation that occure in the same position as variant's mutation, will be shown in the output table even if the mutation have low occurence.
 
 ### Commands Examples:
-1. `sewer_new.py query_freqMut -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -f 0.2 -m 15`
+1. `sewer_new.py query_freqMut -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -f 0.2 -m 15`  
 This command creates 'result' directory (if not exist) with Variants_Mutations_In_Samples_20220111.csv file for all samples in NGS134. All the mutations in the output file will occur in frequency of at least 0.2 and in depth of atleast 15. Important to make sure that NGS134_pileup.csv file exist in /data/sewer/NGS134_30122021/ .
-2. `sewer_new.py query_freqMut -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134 -v A.2.5.1,B.1.617.2`
+2. `sewer_new.py query_freqMut -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134 -v A.2.5.1,B.1.617.2`  
 This command creates 'result_NGS130-132' directory with Variants_Mutations_In_Samples_20220111.csv table for all samples in NGS130, NGS131, NGS132.  All the mutations in the output file will occur in frequency of at least 0.3(=default) and in depth of atleast 10(=default). Just A.2.5.1 and B.1.617.2 will be indicted. Important to make sure that NGS130_pileup.csv, NGS131_pileup.csv, NGS132_pileup.csv files exist in /data/sewer/ .
 
 ## Aditional outputs
 1. log file - creats command__'date'.log file in output directory that contains the command arguments and the NGS runs.
-2. parallel to the pipeline running, prints to screen the bam files paths / pileup files paths which currently execute. 
+2. In parallel to the pipeline running, prints to the screen the bam files paths / pileup files paths which currently running on. 
