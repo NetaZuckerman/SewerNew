@@ -175,11 +175,11 @@ To create one Monitored_Mutations for all NGS runs, provide a path to parent dir
 **-n | --ngs : NGS runs**
 `string` - NGS run (or runs) to focus on in generating the Monitored_Mutations.csv table. provide the NGS runs separated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument. 
 
-**-f | --frequency : minimum frequency**
+**-f | --frequency : minimum frequency**  
 `int` - filter the mutations in the output Variants_Mutations_In_Samples table by frequency. default=0.3.  
 Notice: mutation that occur in the same position as variant's mutation, will be shown in the output table even if the mutation have low frequency.
 
-**-m | --min_depth** 
+**-m | --min_depth**  
 `int` - filter the mutations in the output Variants_Mutations_In_Samples table by count depth. default=10.  
 Notice: mutation that occur in the same position as variant's mutation, will be shown in the output table even if the mutation has low occurrence.
 
