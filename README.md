@@ -50,8 +50,8 @@ The Monitored_Mutations file name will be dated. For example: Monitored_Mutation
 
 ### Arguments
 **-i | --input : input directory (required)**  
-`/path/input/` - the path to the bam files.
-To create one pileup table and one Monitored_Mutations table for specific NGS run, provide a path to NGS run directory. For example: -o /data3/sewer/NGS137_07012022
+`/path/input/` - the path to the NGS run directory (with BAM directory within) or path to parent directory of multiple NGS runs directories.  
+To create one pileup table and one Monitored_Mutations table for specific NGS run, provide a path to NGS run directory. For example: -o /data3/sewer/NGS137_07012022  
 To create pileup tables for all NGS runs and one Monitored_Mutations for all those NGS runs, provide a path to parent directory of all NGS runs directories. For example: -o /data3/sewer.
 
 **-o | --output : output directory (required)**  
