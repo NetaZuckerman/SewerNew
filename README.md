@@ -143,11 +143,11 @@ To create one (variant)Monitored_Mutations for all NGS runs, provide a path to p
 ### Commands Examples:
 1. `sewer_new.py query_var -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -b /data/COVID19/mutationsTable.xlsx -v A.2.5.1,B.1.617.2`  
 This command creates 'result' directory (if not exist) with A.2.5.1,B.1.617.2Monitored_Mutations_20220111.csv table for all samples in NGS134_30122021. Important to make sure that NGS134_pileup.csv file exist in /data/sewer/NGS134_30122021/ .
-2. `sewer_new.py query_var -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134`  
+2. `sewer_new.py query_var -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -b /data/COVID19/mutationsTable.xlsx -n 130,131,132`  
 This command creates 'result_NGS130-132' directory (if not exist) with B.1.617.2Monitored_Mutations_20220111.csv table for all samples in NGS130, NGS131, NGS132. Important to make sure that NGS130_pileup.csv, NGS131_pileup.csv, NGS132_pileup.csv files exist in /data/sewer/ .
 
 &nbsp;
-### query_freqMut action
+## query_freqMut action
 `sewer_new.py query_sam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx] [optional: -t NUMBER_OF_THREDS] [optional: -n NGS_RUNS]`
 
 **query_freqMut : action | action to be executed (required)**  
@@ -189,7 +189,7 @@ Notice: mutation that occur in the same position as variant's mutation, will be 
 ### Commands Examples:
 1. `sewer_new.py query_freqMut -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -b /data/COVID19/mutationsTable.xlsx -f 0.2 -m 15`  
 This command creates 'result' directory (if not exist) with Variants_Mutations_In_Samples_20220111.csv file for all samples in NGS134. All the mutations in the output file will occur in frequency of at least 0.2 and in depth of at least 15. Important to make sure that NGS134_pileup.csv file exist in /data/sewer/NGS134_30122021/ .
-2. `sewer_new.py query_freqMut -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134 -v A.2.5.1,B.1.617.2`  
+2. `sewer_new.py query_freqMut -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -b /data/COVID19/mutationsTable.xlsx -n 130,131,132 -v A.2.5.1,B.1.617.2`  
 This command creates 'result_NGS130-132' directory with Variants_Mutations_In_Samples_20220111.csv table for all samples in NGS130, NGS131, NGS132.  All the mutations in the output file will occur in frequency of at least 0.3(=default) and in depth of at least 10(=default). Just A.2.5.1 and B.1.617.2 will be indicted. Important to make sure that NGS130_pileup.csv, NGS131_pileup.csv, NGS132_pileup.csv files exist in /data/sewer/ .
 
 ## Additional outputs
