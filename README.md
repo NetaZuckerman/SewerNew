@@ -121,9 +121,9 @@ A.2.5.1 | 275 | C | T | NSP1 | L4F | SNP | Leader protein | NSP1:L4F | C275T | 0
 A.2.5.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
 
 **-i | --input : input directory (required)**  
-`/path/input/` - the path to the pileup file (or files).
-To create one (variant)Monitored_Mutations.csv table for specific NGS run, provide a path to NGS run directory. make sure that pileup.csv table already exist. For example: -o /data3/sewer/NGS137_07012022
-To create one (variant)Monitored_Mutations.csv for all NGS runs, provide a path to parent directory of all NGS runs directories. For example: -o /data3/sewer.
+`/path/input/` - the path to the NGS run directory (with pileup.csv file within) or path to parent directory of multiple NGS runs directories.  
+To create one (variant)Monitored_Mutations table for specific NGS run, provide a path to NGS run directory. make sure that pileup.csv table already exist, if not run the general pipeline instead. For example: -o /data3/sewer/NGS137_07012022  
+To create one (variant)Monitored_Mutations for all NGS runs, provide a path to parent directory of all NGS runs directories. For example: -o /data3/sewer.
 
 **-o | --output : output directory (required)**  
 `/path/output` - the path to the output directory. created if directory do not exist 
