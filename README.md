@@ -45,7 +45,7 @@ Creates Monitored_Mutations.csv file containing all mutations in mutationsTable.
 | 275T | A.2.5.1 | 275 | C | T | NSP1 | L4F | SNP | Leader protein | NSP1:L4F | C275T | 0 | 0 | ... | 0.8 |
 | 10747T | A.23.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
 
-This action creates one Monitored_Mutations.csv table for all exsit pileup.csv files from the input argument, unless NGS runs was specified in --ngs argunent. 
+This action creates one Monitored_Mutations.csv table for all exist pileup.csv files from the input argument, unless NGS runs was specified in --ngs argument. 
 The Monitored_Mutations file name will be dated. For example: Monitored_Mutations_20220112.csv will be created in date 12/01/2022 . 
 
 ### Arguments
@@ -67,7 +67,7 @@ To create pileup tables for all NGS runs and one Monitored_Mutations for all tho
 `int` - requested number of threads. can be used in case you have multiple bam files. default=1.
 
 **-n | --ngs : NGS runs**
-`string` - NGS run (or runs) to focus on in generating the Monitored_Mutations.csv table. provide the NGS runs seperated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument.
+`string` - NGS run (or runs) to focus on in generating the Monitored_Mutations.csv table. provide the NGS runs separated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument.
 
 ### Commands Examples:
 1. `sewer_new.py -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx`  
@@ -101,7 +101,7 @@ To create one Monitored_Mutations for all NGS runs, provide a path to parent dir
 `int` - requested number of threads. can be used in case you have multiple pileups files. default=1.
 
 **-n | --ngs : NGS runs**
-`string` - NGS run (or runs) to focuse on in generating the Monitored_Mutations.csv table. provide the NGS runs seperated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument. 
+`string` - NGS run (or runs) to focus on in generating the Monitored_Mutations.csv table. provide the NGS runs seperated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument. 
 
 ### Commands Examples:
 1. `sewer_new.py pileup -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx`  
@@ -113,14 +113,14 @@ This command creates 'result_NGS130-132' directory with Monitored_Mutations_2022
 ## query_var action
 `sewer_new.py query_var [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx] [-v VARIANT_NAME] [optional: -t NUMBER_OF_THREDS] [optional: -n NGS_RUNS]`
 
-**query_var : action | action to be axecuted (required)**  
+**query_var : action | action to be executed (required)**  
 `query_var` - creates (variant)Monitored_Mutations.csv file containing all mutations in one asked variant from mutationsTable.xlsx merged with pileup.csv file for example:
 | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 A.2.5.1 | 275 | C | T | NSP1 | L4F | SNP | Leader protein | NSP1:L4F | C275T | 0 | 0 | ... | 0.8 |
 A.2.5.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
 
-**-i | --input : input diectory (required)**  
+**-i | --input : input directory (required)**  
 `/path/input/` - the path to the pileup file (or files).
 To create one (variant)Monitored_Mutations.csv table for specific NGS run, provide a path to NGS run directory. make sure that pileup.csv table already exist. For example: -o /data3/sewer/NGS137_07012022
 To create one (variant)Monitored_Mutations.csv for all NGS runs, provide a path to parent directory of all NGS runs directories. For example: -o /data3/sewer.
@@ -132,7 +132,7 @@ To create one (variant)Monitored_Mutations.csv for all NGS runs, provide a path 
 `/path/mutationsTable.xlsx` - the path to mutationsTable.xlsx.
 
 **-v | --variant : provide variant name (required)**  
-`variant` - name of variant (or variants) in the same format as mutationsTable. provide the variant names seperated by comma, for example: -v A.2.5.1,B.1.617.2 .
+`variant` - name of variant (or variants) in the same format as mutationsTable. provide the variant names separated by comma, for example: -v A.2.5.1,B.1.617.2 .
 
 **-t | --threads : threads number**  
 `int` - requested number of threads. can be used in case you have multiple pileups files. default=1.
@@ -150,8 +150,8 @@ This command creates 'result_NGS130-132' directory (if not exist) with B.1.617.2
 ### query_freqMut action
 `sewer_new.py query_sam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx] [optional: -t NUMBER_OF_THREDS] [optional: -n NGS_RUNS]`
 
-**query_freqMut : action | action to be axecuted (required)**  
-`query_freqMut` - creates Variants_Mutations_In_Samples.csv file containing filtered mutations by frequency from pileups.csv with association to the COVID19 variants (1=mutation exist in vaiant, 0=otherwise). for example:
+**query_freqMut : action | action to be executed (required)**  
+`query_freqMut` - creates Variants_Mutations_In_Samples.csv file containing filtered mutations by frequency from pileups.csv with association to the COVID19 variants (1=mutation exist in variant, 0=otherwise). for example:
 | samplename | pos | ref | alt | count | freq | variants | A | A.2.5.1 | ... | PDI 353 (B.1.637 Based) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | env613 | 275 | C | T | 5 | 0.01 | PDI 353 (B.1.637 Based) | 0 | 0 | ... | 1 |
@@ -160,7 +160,7 @@ This command creates 'result_NGS130-132' directory (if not exist) with B.1.617.2
 
 **-i | --input : input directory (required)**  
 `/path/input/` - the path to the pileup file (or files).
-To create one Monitored_Mutations table for specific NGS run, provide a path to NGS run directory. make sure that pileup.csv table is already exist, if not run the general pipeline instead. For example: -o /data3/sewer/NGS137_07012022
+To create one Monitored_Mutations table for specific NGS run, provide a path to NGS run directory. make sure that pileup.csv table already exist, if not run the general pipeline instead. For example: -o /data3/sewer/NGS137_07012022
 To create one Monitored_Mutations for all NGS runs, provide a path to parent directory of all NGS runs directories. For example: -o /data3/sewer.
 
 **-o | --output : output directory (required)**  
@@ -173,25 +173,25 @@ To create one Monitored_Mutations for all NGS runs, provide a path to parent dir
 `int` - requested number of threads. can be used in case you have multiple pileups files. default=1.
 
 **-v | --variant : provide variant name (required)**  
-`variant` - name of variant (or variants) in the same format as mutationsTable. provide the variant names seperated by comma, for example: -v A.2.5.1,B.1.617.2 .
+`variant` - name of variant (or variants) in the same format as mutationsTable. provide the variant names separated by comma, for example: -v A.2.5.1,B.1.617.2 .
 
 **-n | --ngs : NGS runs**
-`string` - NGS run (or runs) to focuse on in generating the Monitored_Mutations.csv table. provide the NGS runs seperated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument. 
+`string` - NGS run (or runs) to focus on in generating the Monitored_Mutations.csv table. provide the NGS runs separated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument. 
 
 **-f | --frequency : minimum frequency**
 `int` - filter the mutations in the output Variants_Mutations_In_Samples table by frequency. default=0.3.  
-Notice: mutation that occure in the same position as variant's mutation, will be shown in the output table even if the mutation have low frequency.
+Notice: mutation that occur in the same position as variant's mutation, will be shown in the output table even if the mutation have low frequency.
 
 **-m | --min_depth** 
 `int` - filter the mutations in the output Variants_Mutations_In_Samples table by count depth. default=10.  
-Notice: mutation that occure in the same position as variant's mutation, will be shown in the output table even if the mutation have low occurence.
+Notice: mutation that occur in the same position as variant's mutation, will be shown in the output table even if the mutation has low occurrence.
 
 ### Commands Examples:
 1. `sewer_new.py query_freqMut -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -f 0.2 -m 15`  
-This command creates 'result' directory (if not exist) with Variants_Mutations_In_Samples_20220111.csv file for all samples in NGS134. All the mutations in the output file will occur in frequency of at least 0.2 and in depth of atleast 15. Important to make sure that NGS134_pileup.csv file exist in /data/sewer/NGS134_30122021/ .
+This command creates 'result' directory (if not exist) with Variants_Mutations_In_Samples_20220111.csv file for all samples in NGS134. All the mutations in the output file will occur in frequency of at least 0.2 and in depth of at least 15. Important to make sure that NGS134_pileup.csv file exist in /data/sewer/NGS134_30122021/ .
 2. `sewer_new.py query_freqMut -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134 -v A.2.5.1,B.1.617.2`  
-This command creates 'result_NGS130-132' directory with Variants_Mutations_In_Samples_20220111.csv table for all samples in NGS130, NGS131, NGS132.  All the mutations in the output file will occur in frequency of at least 0.3(=default) and in depth of atleast 10(=default). Just A.2.5.1 and B.1.617.2 will be indicted. Important to make sure that NGS130_pileup.csv, NGS131_pileup.csv, NGS132_pileup.csv files exist in /data/sewer/ .
+This command creates 'result_NGS130-132' directory with Variants_Mutations_In_Samples_20220111.csv table for all samples in NGS130, NGS131, NGS132.  All the mutations in the output file will occur in frequency of at least 0.3(=default) and in depth of at least 10(=default). Just A.2.5.1 and B.1.617.2 will be indicted. Important to make sure that NGS130_pileup.csv, NGS131_pileup.csv, NGS132_pileup.csv files exist in /data/sewer/ .
 
-## Aditional outputs
-1. log file - creats command__'date'.log file in output directory that contains the command arguments and the NGS runs.
+## Additional outputs
+1. log file - creates command__'date'.log file in output directory that contains the command arguments and the NGS runs.
 2. In parallel to the pipeline running, prints to the screen the bam files paths / pileup files paths which currently running on. 
