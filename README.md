@@ -172,9 +172,6 @@ To create one Monitored_Mutations for all NGS runs, provide a path to parent dir
 **-t | --threads : threads number**  
 `int` - requested number of threads. can be used in case you have multiple pileups files. default=1.
 
-**-v | --variant : provide variant name (required)**  
-`variant` - name of variant (or variants) in the same format as mutationsTable. provide the variant names separated by comma, for example: -v A.2.5.1,B.1.617.2 .
-
 **-n | --ngs : NGS runs**
 `string` - NGS run (or runs) to focus on in generating the Monitored_Mutations.csv table. provide the NGS runs separated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument. 
 
