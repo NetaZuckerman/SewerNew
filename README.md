@@ -71,7 +71,7 @@ To create pileup tables for all NGS runs and one Monitored_Mutations for all tho
 
 ### Commands Examples:
 1. `sewer_new.py -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx`  
-This command creates result directory with Monitored_Mutations_20220112.csv file.
+This command creates result directory with NGS(int)_pileup.csv and Monitored_Mutations_20220112.csv files.
 2. `sewer_new.py -i /data/sewer/ -o /data/sewer/result_NGS130-134/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134`  
 This command creates NGS(int)_pileup.csv files in 'result' directories for all NGS runs in /data/sewer/ that not contain pileup file. Afterwards the pipeline will create 'result_NGS130-134' directory with Monitored_Mutations_20220112.csv table for all samples in NGS130, NGS131, NGS132, NGS133 and NGS134.
 
