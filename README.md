@@ -148,7 +148,7 @@ This command creates 'result_NGS130-132' directory (if not exist) with B.1.617.2
 
 &nbsp;
 ## query_freqMut action
-`sewer_new.py query_sam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx] [optional: -t NUMBER_OF_THREDS] [optional: -n NGS_RUNS] [optional: -f FREQUENCY_THRESHOLD_NUMBER] [optional: -m COUNT_THRESHOLD_NUMBER]`
+`sewer_new.py query_sam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx] [optional: -t NUMBER_OF_THREDS] [optional: -n NGS_RUNS] [optional: -f FREQUENCY_THRESHOLD_NUMBER] [optional: -m COUNT_THRESHOLD_NUMBER] [optional: -v VARIANT_NAME]`
 
 **query_freqMut : action | action to be executed (required)**  
 `query_freqMut` - creates Variants_Mutations_In_Samples.csv file containing filtered mutations by frequency from pileups.csv with association to the COVID19 variants (1=mutation exist in variant, 0=otherwise). for example:
@@ -174,6 +174,9 @@ To create one Monitored_Mutations for all NGS runs, provide a path to parent dir
 
 **-n | --ngs : NGS runs**
 `string` - NGS run (or runs) to focus on in generating the Monitored_Mutations.csv table. provide the NGS runs separated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument. 
+
+**-v | --variant : provide variant name**  
+`variant` - name of variant (or variants) in the same format as mutationsTable. provide the variant names separated by comma, for example: -v A.2.5.1,B.1.617.2 .
 
 **-f | --frequency : minimum frequency**  
 `int` - filter the mutations in the output Variants_Mutations_In_Samples table by frequency. default=0.3.  
