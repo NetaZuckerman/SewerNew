@@ -87,7 +87,7 @@ This command creates NGS(int)_pileup.csv files in 'result' directories for all N
 | 10747T | A.23.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
 
 **-i | --input : input directory (required)**  
-`/path/input/` - the path to the pileup file (or files).
+`/path/input/` - the path to the NGS run directory (with pileup.csv file within) or path to parent directory of multiple NGS runs directories.  
 To create one Monitored_Mutations table for specific NGS run, provide a path to NGS run directory. make sure that pileup.csv table is already exist, if not run the general pipeline instead. For example: -o /data3/sewer/NGS137_07012022
 To create one Monitored_Mutations for all NGS runs, provide a path to parent directory of all NGS runs directories. For example: -o /data3/sewer.
 
