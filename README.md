@@ -138,7 +138,7 @@ To create one (variant)Monitored_Mutations for all NGS runs, provide a path to p
 `int` - requested number of threads. can be used in case you have multiple pileups files. default=1.
 
 **-n | --ngs : NGS runs**
-`string` - NGS run (or runs) to focus on in generating the Monitored_Mutations.csv table. provide the NGS runs separated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument. 
+`string` - NGS run (or runs) to focus on in generating the (variant)Monitored_Mutations.csv table. provide the NGS runs separated by comma, for example: -n 132,133,134 (for runs NGS132_14122021, NGS133_23122021, NGS134_30122021). Make sure that the asked NGS runs directories are children directories of the input path argument. 
 
 ### Commands Examples:
 1. `sewer_new.py query_var -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -v A.2.5.1,B.1.617.2`  
