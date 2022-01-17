@@ -114,7 +114,7 @@ This command creates 'result_NGS130-132' directory with Monitored_Mutations_2022
 `sewer_new.py query_var [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx] [-v VARIANT_NAME] [optional: -t NUMBER_OF_THREDS] [optional: -n NGS_RUNS]`
 
 **query_var : action | action to be executed (required)**  
-`query_var` - creates (variant)Monitored_Mutations.csv file containing all mutations in one asked variant from mutationsTable.xlsx merged with pileup.csv file for example:
+`query_var` - creates (variant)Monitored_Mutations.csv file containing all mutations in asked variant (or variants) from mutationsTable.xlsx merged with pileup.csv file for example:
 | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 A.2.5.1 | 275 | C | T | NSP1 | L4F | SNP | Leader protein | NSP1:L4F | C275T | 0 | 0 | ... | 0.8 |
