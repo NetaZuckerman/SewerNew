@@ -148,7 +148,7 @@ This command creates 'result_NGS130-132' directory (if not exist) with B.1.617.2
 
 &nbsp;
 ## query_freqMut action
-`sewer_new.py query_sam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx] [optional: -t NUMBER_OF_THREDS] [optional: -n NGS_RUNS]`
+`sewer_new.py query_sam [-i INPUT_DIR_PATH] [-o OUTPUT_DIR_PATH] [-b mutationsTable.xlsx] [optional: -t NUMBER_OF_THREDS] [optional: -n NGS_RUNS] [optional: -f FREQUENCY_THRESHOLD_NUMBER] [optional: -m COUNT_THRESHOLD_NUMBER]`
 
 **query_freqMut : action | action to be executed (required)**  
 `query_freqMut` - creates Variants_Mutations_In_Samples.csv file containing filtered mutations by frequency from pileups.csv with association to the COVID19 variants (1=mutation exist in variant, 0=otherwise). for example:
