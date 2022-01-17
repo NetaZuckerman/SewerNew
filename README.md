@@ -106,7 +106,7 @@ To create one Monitored_Mutations for all NGS runs, provide a path to parent dir
 ### Commands Examples:
 1. `sewer_new.py pileup -i /data/sewer/NGS134_30122021/ -o /data/sewer/NGS134_30122021/result/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx`  
 This command creates 'result' directory with Monitored_Mutations_20220112.csv file. Important to make sure that NGS134_pileup.csv file exist in /data/sewer/NGS134_30122021/ .
-2. `sewer_new.py pileup -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132,134`  
+2. `sewer_new.py pileup -i /data/sewer/ -o /data/sewer/result_NGS130-132/ -r /data/COVID19/REF_NC_045512.2.fasta -b /data/COVID19/mutationsTable.xlsx -n 130,131,132`  
 This command creates 'result_NGS130-132' directory with Monitored_Mutations_20220112.csv table for all samples in NGS130, NGS131, NGS132. Important to make sure that NGS130_pileup.csv, NGS131_pileup.csv, NGS132_pileup.csv files exist in /data/sewer/ .
 
 &nbsp;
