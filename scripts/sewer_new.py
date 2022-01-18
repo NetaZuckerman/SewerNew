@@ -258,6 +258,10 @@ class BodekMerge():
         logger.info(os.path.dirname(pileup_files))
         pileup_df = pd.read_csv(pileup_files)
         bodek_dict = pd.read_excel(self.args.bodek, sheet_name=None,engine='openpyxl')
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7cf36e577ce4d294f53d7c3b15a1f5315b305382
         pileup_df = pileup_df.pivot_table(index=['pos', 'alt'], columns=['samplename'], values=['freq']) \
             .droplevel(0, axis=1) \
             .reset_index()
