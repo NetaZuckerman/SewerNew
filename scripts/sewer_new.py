@@ -146,7 +146,7 @@ class BamConverter():
     output: dataframe with info about the positions in the input bam file.
     '''
     def _generate_pileups_from_bam(self, bam_file):
-        print(bam_file)
+        print(bam_file, flush=True)
         with pysam.AlignmentFile(bam_file) as bamfile, pysam.FastaFile(self.args.ref) as fastafile:
             
             pileups = bamfile.pileup(stepper='samtools', fastafile=fastafile)
@@ -225,7 +225,7 @@ class BamConverter():
     def convert(self):
         
         basepath = verify_path(self.args, 'input')
-        print("starts creating pileup files")
+        print("starts creating pileup files", flush=True)
         # if args.input dir is /PATH/NGSxx_DATE directory
         if os.path.basename(basepath).startswith("NGS"):
             self.create_output(basepath) 
@@ -236,7 +236,7 @@ class BamConverter():
                 if os.path.isdir(path) and fname.startswith('NGS'):
                     self.create_output(path)
                     
-        print("done creating pileup files")
+        print("done creating pileup files", flush=True)
 
 
 #%% Bodek-based table
@@ -254,12 +254,11 @@ class BodekMerge():
     output: dataframe with mutations frequencies in all samples for each variant.
     '''
     def _merge_pileups_bodek(self,pileup_files):
-        print(pileup_files)
+        print(pileup_files, flush=True)
         logger.info(os.path.dirname(pileup_files))
         pileup_df = pd.read_csv(pileup_files)
         bodek_dict = pd.read_excel(self.args.bodek, sheet_name=None,engine='openpyxl')
-
-        pileup_df = pileup_df.pivot(index=['pos', 'alt'], columns=['samplename'], values=['freq']) \
+        pileup_df = pileup_df.pivot_table(index=['pos', 'alt'], columns=['samplename'], values=['freq']) \
             .droplevel(0, axis=1) \
             .reset_index()
             
@@ -304,7 +303,7 @@ class BodekMerge():
     def merge(self):
 
         pileup_path = verify_path(self.args, 'input')
-        print("starts creating Monitored_Mutations table")
+        print("starts creating Monitored_Mutations table", flush=True)
         
         #pileup_files = pileup_path.glob('*pileups.csv')
 
@@ -328,7 +327,7 @@ class BodekMerge():
         day = datetime.now().strftime("%Y%m%d")
         out_path = args.output / ('%sMonitored_Mutations_%s.csv' % (self.args.variant,day))
         merged_pileup.to_csv(out_path,index=False)
-        print("done creating Monitored_Mutations table")
+        print("done creating Monitored_Mutations table", flush=True)
 
 
 #%% Pileup-based table
@@ -346,7 +345,7 @@ class PileupMerge():
     output: dataframe of mutations indexed by variants.
     ''' 
     def _merge_pileups_bodek(self,pileup_files):
-        print(pileup_files)
+        print(pileup_files, flush=True)
         logger.info(os.path.dirname(pileup_files))
         pileup_df = pd.read_csv(pileup_files)
         bodek_dict = pd.read_excel(self.args.bodek, sheet_name=None,engine='openpyxl')
@@ -401,7 +400,7 @@ class PileupMerge():
     def merge(self):
 
         pileup_path = verify_path(self.args, 'input')
-        print("starts creating Variants_Mutations_In_Samples table")
+        print("starts creating Variants_Mutations_In_Samples table", flush=True)
         
         if self.args.ngs:
             ngs_list = self.args.ngs.split(',')
@@ -423,7 +422,7 @@ class PileupMerge():
         day = datetime.now().strftime("%Y%m%d")
         out_path = args.output / ('%sVariants_Mutations_In_Samples_%s.csv' % (self.args.variant,day))
         merged_pileup.to_csv(out_path,index=False)
-        print("done creating Variants_Mutations_In_Samples table")
+        print("done creating Variants_Mutations_In_Samples table", flush=True)
 
 #%% Main
 if __name__ == "__main__":
@@ -434,7 +433,7 @@ if __name__ == "__main__":
     # Check whether the specified path exists or not
     isExist = os.path.exists(args.output)
     if not isExist: 
-      # Create a new directory because it does not exist 
+      # Create a new directory because it does not exist
       os.makedirs(args.output)
       
     day = datetime.now().strftime("%Y%m%d")
