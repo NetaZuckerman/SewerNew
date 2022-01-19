@@ -258,10 +258,12 @@ class BodekMerge():
         logger.info(os.path.dirname(pileup_files))
         pileup_df = pd.read_csv(pileup_files)
         bodek_dict = pd.read_excel(self.args.bodek, sheet_name=None,engine='openpyxl')
-<<<<<<< HEAD
-=======
-
->>>>>>> 7cf36e577ce4d294f53d7c3b15a1f5315b305382
+        
+        # filter count up to 10 - wiil be NC
+        position_count = pileup_df.groupby(['samplename','pos'],as_index = False).agg({'count':'sum'})
+        position_count = position_count.loc[position_count['count'] >= self.args.min_depth ,['pos']]
+        pileup_df = pd.merge(pileup_df,position_count,how='inner',left_on=['pos'],right_on=['pos']) 
+        
         pileup_df = pileup_df.pivot_table(index=['pos', 'alt'], columns=['samplename'], values=['freq']) \
             .droplevel(0, axis=1) \
             .reset_index()
@@ -354,13 +356,20 @@ class PileupMerge():
         pileup_df = pd.read_csv(pileup_files)
         bodek_dict = pd.read_excel(self.args.bodek, sheet_name=None,engine='openpyxl')
 
+        pileup_df = pileup_df.drop(pileup_df[pileup_df['count'] == 0].index)
+                
+        # depyh in postion       
+        position_count = pileup_df.groupby(['samplename','pos'],as_index = False).agg({'count':'sum'})
+        position_count = position_count.loc[position_count['count'] >= self.args.min_depth ,['pos']]
+
+        pileup_df = pd.merge(pileup_df,position_count,how='inner',left_on=['pos'],right_on=['pos'])    
         pileup_df = pileup_df.drop(pileup_df[(pileup_df.ref == pileup_df.alt)].index)
-        pileup_df = pileup_df.drop(pileup_df[pileup_df.freq == 0].index)
+
+        # if exist mutation in the bodek and there is another mutation in the same position
+        pileup_df_low = pileup_df.loc[pileup_df['freq'] < self.args.frq]
+        pileup_df = pileup_df.loc[pileup_df['freq'] >= self.args.frq] 
         
         pileup_df = pileup_df.set_index(pileup_df.pos.astype(str) + pileup_df['alt'])
-        # if exist mutation in the bodek and there is another mutation in the same position
-        pileup_df_low = pileup_df.loc[(pileup_df['count'] < self.args.min_depth) | (pileup_df['freq'] < self.args.frq)]
-        pileup_df = pileup_df.loc[(pileup_df['count'] >= self.args.min_depth) & (pileup_df['freq'] >= self.args.frq)]
         
         if(self.args.variant != ''):
             list_var = self.args.variant.split(',')
