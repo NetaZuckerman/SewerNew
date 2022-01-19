@@ -261,8 +261,8 @@ class BodekMerge():
         
         # filter count up to 10 - wiil be NC
         position_count = pileup_df.groupby(['samplename','pos'],as_index = False).agg({'count':'sum'})
-        position_count = position_count.loc[position_count['count'] >= self.args.min_depth ,['pos']]
-        pileup_df = pd.merge(pileup_df,position_count,how='inner',left_on=['pos'],right_on=['pos']) 
+        position_count = position_count.loc[position_count['count'] >= self.args.min_depth ,['samplename','pos']]
+        pileup_df = pd.merge(pileup_df,position_count,how='inner',left_on=['samplename','pos'],right_on=['samplename','pos']) 
         
         pileup_df = pileup_df.pivot_table(index=['pos', 'alt'], columns=['samplename'], values=['freq']) \
             .droplevel(0, axis=1) \
@@ -360,9 +360,9 @@ class PileupMerge():
                 
         # depyh in postion       
         position_count = pileup_df.groupby(['samplename','pos'],as_index = False).agg({'count':'sum'})
-        position_count = position_count.loc[position_count['count'] >= self.args.min_depth ,['pos']]
+        position_count = position_count.loc[position_count['count'] >= self.args.min_depth ,['samplename','pos']]
 
-        pileup_df = pd.merge(pileup_df,position_count,how='inner',left_on=['pos'],right_on=['pos'])    
+        pileup_df = pd.merge(pileup_df,position_count,how='inner',left_on=['samplename','pos'],right_on=['samplename','pos'])   
         pileup_df = pileup_df.drop(pileup_df[(pileup_df.ref == pileup_df.alt)].index)
 
         # if exist mutation in the bodek and there is another mutation in the same position
