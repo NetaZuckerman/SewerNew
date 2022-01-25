@@ -40,7 +40,7 @@ This action goes recursively over all BAM directories in the NGS_run directories
 The pileup file name will be unique for each NGS run. For example: NGS130_pileup.csv file will be created for NGS130_13122021. 
 ### 2. Monitored_Mutations.csv
 Creates Monitored_Mutations.csv file containing all mutations in mutationsTable.xlsx (all COVID19 variants) merged with pileup.csv file (or files). for example:
-| index | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
+| index | cov_variant | Position | Reference | Mutation | protein | aa_mut | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 275T | A.2.5.1 | 275 | C | T | NSP1 | L4F | SNP | Leader protein | NSP1:L4F | C275T | 0 | 0 | ... | 0.8 |
 | 10747T | A.23.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
@@ -84,7 +84,7 @@ This command creates NGS(int)_pileup.csv files in 'result' directories for all N
 
 **pileup : action | action to be executed (required)**  
 `pileup` - creates Monitored_Mutations.csv file containing all mutations in mutationsTable.xlsx (all COVID19 variants) merged with pileup.csv file. for example:
-| index | cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
+| index | cov_variant | Position | Reference | Mutation | protein | aa_mut | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 275T | A.2.5.1 | 275 | C | T | NSP1 | L4F | SNP | Leader protein | NSP1:L4F | C275T | 0 | 0 | ... | 0.8 |
 | 10747T | A.23.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
@@ -121,7 +121,7 @@ This command creates 'result_NGS130-132' directory with Monitored_Mutations_2022
 
 **query_var : action | action to be executed (required)**  
 `query_var` - creates Monitored_Mutations_date_(variant).xlsx file containing all mutations in asked variant (or variants) from mutationsTable.xlsx merged with pileup.csv file. each variant in different sheet. for example:
-| cov_variant | Position | Reference | Mutation | protein | variant | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
+| cov_variant | Position | Reference | Mutation | protein | aa_mut | Mutation type | annotation | varname | nuc sub | env613 | env614 | ... | env700 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 A.2.5.1 | 275 | C | T | NSP1 | L4F | SNP | Leader protein | NSP1:L4F | C275T | 0 | 0 | ... | 0.8 |
 A.2.5.1 | 10747 | C | T | NSP5 | N231N | SNP_silent | 3C-like proteinase | NSP5:N231N | C10747T | 0.5 | 0.1 | ... | NC |
@@ -138,7 +138,7 @@ To create one Monitored_Mutations_date_(variant) for all NGS runs, provide a pat
 `/path/mutationsTable.xlsx` - the path to mutationsTable.xlsx.
 
 **-v | --variant : provide variant name (required)**  
-`variant` - name of variant (or variants) in the same format as mutationsTable. provide the variant names separated by comma, for example: -v A.2.5.1,B.1.617.2 .
+`variant` - name of variant (or variants) in the same format as mutationsTable. provide the variant names separated by comma, for example: -v 'B.1.617.2 signature d',BA.1 (if the variant names contains spaces, put the name in spreadsheets, see example).
 
 **-t | --threads : threads number**  
 `int` - requested number of threads. can be used in case you have multiple pileups files. default=1.
