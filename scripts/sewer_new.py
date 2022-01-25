@@ -20,6 +20,7 @@ from datetime import datetime
 import itertools
 import logging
 import sys
+from pandas import ExcelWriter
 logger = logging.getLogger(__name__)
 
 
@@ -104,7 +105,7 @@ def define_parser():
         '--frequency',
         dest='frq',
         type=float,
-        default=0.3,
+        default=0.03,
         help="Path to MutationsTable.xlsx"
         )
     min_depth = parser.add_argument_group('min_depth arguments')
@@ -138,6 +139,7 @@ class BamConverter():
     
     def __init__(self, args):
         self.args = args
+        
 
     '''
     generate pileup from bam
@@ -245,6 +247,40 @@ class BodekMerge():
     
     def __init__(self, args):
         self.args = args
+    
+    def combine_indels(self,sheet,env_cols):
+        df_dup = sheet[sheet.duplicated(['variant'], keep=False)]
+        df_uniq = sheet[~sheet.isin(df_dup)].dropna(how = 'all')
+        df_dup[env_cols] = df_dup[env_cols].apply(pd.to_numeric, errors='coerce', axis=1)
+        df_new = pd.DataFrame(columns=df_dup.columns)
+                
+        for var in np.unique(df_dup['variant']):
+            temp_df = df_dup[df_dup['variant'] == var]
+            temp_df.sort_values(by=['Position'])
+            p = str(temp_df.iloc[0]['Position']) + '-' + str(temp_df.iloc[-1]['Position'])
+            r = ''.join(temp_df['Reference'].tolist())
+            df_new = df_new.append(temp_df.iloc[0], ignore_index=True)
+            df_new.at[len(df_new)-1, 'Position'] = p
+            df_new.at[len(df_new)-1, 'Reference'] = r
+                    
+        env_cols.append('variant')   
+        df_dup = df_dup[env_cols].groupby("variant").mean()
+        env_cols.remove('variant')
+        df_new[env_cols] = df_dup[env_cols].values
+            
+        sheet = pd.concat([df_new,df_uniq]).reset_index(drop=True)
+        return(sheet)
+
+    def write_in_sheets(self,merged_pileup,day):
+        variants_name = self.args.variant.replace(' ','') 
+        variants_name = variants_name.replace(',','_')
+        variants_name = '_' + variants_name
+        out_path = args.output / ('Monitored_Mutations_%s%s.xlsx' % (day,variants_name))
+        writer = ExcelWriter(out_path)
+        variants_names = np.unique(merged_pileup['cov_variant']) 
+        for row in variants_names:
+            merged_pileup[merged_pileup['cov_variant'] == row].to_excel(writer, row,index=False)
+        writer.save() 
         
     '''
     merge pileup file with mutations_table
@@ -284,9 +320,13 @@ class BodekMerge():
         for variant, sheet in bodek_dict.items():
             sheet = sheet.set_index(sheet.Position.astype(str) + sheet['Mutation'])
             ind = pileup_df.index.intersection(sheet.index)
-            sheet[env_cols] = 'NC' # if the mutations did not mapped to the reference
+            sheet[env_cols] = '' # if the mutations did not mapped to the reference
             sheet.loc[ind, env_cols] = pileup_df.loc[ind, env_cols]
             sheet.insert(0, 'cov_variant', variant)
+            
+            if(self.args.action == 'query_var'):
+                sheet = self.combine_indels(sheet,env_cols)
+                
             output_dfs.append(sheet)
         outputs_df = pd.concat(output_dfs, axis=0)
         outputs_df = outputs_df.drop(["Unnamed: 9","nuc sub.1"], axis=1,errors='ignore')
@@ -330,9 +370,16 @@ class BodekMerge():
             .reset_index()
         merged_pileup = merged_pileup.loc[:,~merged_pileup.columns.duplicated()]
         merged_pileup = merged_pileup.drop(columns='index')
+        merged_pileup.replace('','NC',inplace=True)
+        merged_pileup = merged_pileup.rename({'variant': 'aa_mut'}, axis=1)
         day = datetime.now().strftime("%Y%m%d")
-        out_path = args.output / ('%sMonitored_Mutations_%s.csv' % (self.args.variant,day))
-        merged_pileup.to_csv(out_path,index=False)
+        
+        if(self.args.action == 'query_var'):
+            self.write_in_sheets(merged_pileup,day)
+        
+        else:
+            out_path = args.output / ('Monitored_Mutations_%s.csv' % (day))
+            merged_pileup.to_csv(out_path,index=False)
         print("done creating Monitored_Mutations table", flush=True)
 
 
@@ -370,10 +417,6 @@ class PileupMerge():
         pileup_df = pileup_df.loc[pileup_df['freq'] >= self.args.frq] 
         
         pileup_df = pileup_df.set_index(pileup_df.pos.astype(str) + pileup_df['alt'])
-        
-        if(self.args.variant != ''):
-            list_var = self.args.variant.split(',')
-            bodek_dict = {i: bodek_dict[i] for i in list_var}
 
         variants = []
         for variant, sheet in bodek_dict.items():
@@ -433,7 +476,19 @@ class PileupMerge():
         merged_pileup = merged_pileup.drop(columns='index')
         merged_pileup.drop_duplicates(inplace=True)
         day = datetime.now().strftime("%Y%m%d")
-        out_path = args.output / ('%sVariants_Mutations_In_Samples_%s.csv' % (self.args.variant,day))
+        
+        variants_name = ''
+        if(self.args.variant != ''):
+           variants_name = self.args.variant.replace(' ','') 
+           variants_name = self.args.variant.replace(',','_')
+           variants_name = '_' + variants_name
+          
+           variants = self.args.variant.split(',')
+           cols_to_keep = ['samplename','pos','ref','alt','count','freq','variants'] + variants
+           merged_pileup = merged_pileup[cols_to_keep]
+           
+        
+        out_path = args.output / ('Variants_Mutations_In_Samples_%s%s.csv' % (day,variants_name))
         merged_pileup.to_csv(out_path,index=False)
         print("done creating Variants_Mutations_In_Samples table", flush=True)
 
